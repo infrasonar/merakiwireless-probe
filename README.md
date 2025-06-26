@@ -1,7 +1,7 @@
 [![CI](https://github.com/infrasonar/merakiwireless-probe/workflows/CI/badge.svg)](https://github.com/infrasonar/merakiwireless-probe/actions)
 [![Release Version](https://img.shields.io/github/release/infrasonar/merakiwireless-probe)](https://github.com/infrasonar/merakiwireless-probe/releases)
 
-# InfraSonar Meraki Organization Probe
+# InfraSonar Meraki Wireless Device Probe
 
 Documentation: https://docs.infrasonar.com/collectors/probes/meraki/
 
@@ -45,7 +45,7 @@ Create a yaml file, for example _(test.yaml)_:
 
 ```yaml
 asset:
-  name: "Meraki"
+  name: "MerakiDevice"
   check: "device"
   config:
     id: "123456"
@@ -59,4 +59,3 @@ Run the probe with the `DRY_RUN` environment variable set the the yaml file abov
 ```
 DRY_RUN=test.yaml python main.py
 ```
-# merakiwireless-probe
