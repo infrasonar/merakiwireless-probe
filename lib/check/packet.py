@@ -4,8 +4,10 @@ from libprobe.asset import Asset
 from ..query import query
 
 
-def _float(inp: float | int | str | None) -> float | None:
-    return float(inp) if isinstance(inp, (int, str)) else inp
+def _float(inp: float | int | str | None) -> float:
+    return 0.0 if inp is None else \
+        float(inp) if isinstance(inp, (int, str)) else \
+            inp
 
 
 async def check_packet(
@@ -46,8 +48,10 @@ async def check_packet(
             "name": stream,
             "total": data["total"],  # int
             "lost": data["lost"],  # int
-            "lossPercentage": _float(data["lossPercentage"]),  # float?
+            "lossPercentage": _float(data["lossPercentage"]),  # float
         })
+        # for lossPercentage we send 0.0 for null, this works for our use case
+        # where 0 total and 0 loss will be handled as 0.0 percentage loss.
 
     state = {
         "loss": items,  # multiple (2) items
