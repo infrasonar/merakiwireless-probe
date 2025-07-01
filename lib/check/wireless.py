@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import logging
+import random
 from typing import Any
 from libprobe.asset import Asset
 from ..query import query
@@ -196,26 +197,26 @@ async def check_wireless(
     try:
         await update_latency(network_id, serial, asset_config, network)
     except Exception:
-        await asyncio.sleep(1.0)  # retry
+        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
         await update_latency(network_id, serial, asset_config, network)
 
     try:
         await update_rate(network_id, serial, asset_config, network)
     except Exception:
-        await asyncio.sleep(1.0)  # retry
+        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
         await update_rate(network_id, serial, asset_config, network)
 
     try:
         await update_client_count(network_id, serial, asset_config, network)
     except Exception:
-        await asyncio.sleep(1.0)  # retry
+        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
         await update_client_count(network_id, serial, asset_config, network)
 
     try:
         signal_quality = \
             await get_signal_quality(network_id, serial, asset_config)
     except Exception:
-        await asyncio.sleep(1.0)  # retry
+        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
         signal_quality = \
             await get_signal_quality(network_id, serial, asset_config)
 
@@ -223,7 +224,7 @@ async def check_wireless(
         channel_utilization = \
             await get_channel_utilization(org_id, serial, asset_config)
     except Exception:
-        await asyncio.sleep(1.0)  # retry
+        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
         channel_utilization = \
             await get_channel_utilization(org_id, serial, asset_config)
 
