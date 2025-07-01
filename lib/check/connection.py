@@ -25,7 +25,7 @@ async def check_connection(
         raise Exception(
             'Missing Serial in asset collector configuration')
 
-    req = f'devices/{serial}/wireless/connectionStats?timespan=300'
+    req = f'/devices/{serial}/wireless/connectionStats?timespan=300'
     resp = await query(asset_config, req)
     if len(resp) == 0:
         raise Exception(

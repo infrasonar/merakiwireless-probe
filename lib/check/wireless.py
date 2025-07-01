@@ -35,7 +35,7 @@ async def update_status(org_id: str, serial: str,
 async def get_signal_quality(network_id: str, serial: str,
                              asset_config: dict[str, Any]):
     req = (
-        f'networks/{network_id}/wireless/signalQualityHistory'
+        f'/networks/{network_id}/wireless/signalQualityHistory'
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
@@ -55,7 +55,7 @@ async def update_latency(network_id: str, serial: str,
                          asset_config: dict[str, Any],
                          item: dict[str, Any]):
     req = (
-        f'networks/{network_id}/wireless/latencyHistory'
+        f'/networks/{network_id}/wireless/latencyHistory'
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
@@ -70,7 +70,7 @@ async def update_rate(network_id: str, serial: str,
                       asset_config: dict[str, Any],
                       item: dict[str, Any]):
     req = (
-        f'networks/{network_id}/wireless/dataRateHistory'
+        f'/networks/{network_id}/wireless/dataRateHistory'
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
@@ -88,7 +88,7 @@ async def update_client_count(network_id: str, serial: str,
                               asset_config: dict[str, Any],
                               item: dict[str, Any]):
     req = (
-        f'networks/{network_id}/wireless/clientCountHistory'
+        f'/networks/{network_id}/wireless/clientCountHistory'
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
