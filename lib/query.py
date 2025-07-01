@@ -1,13 +1,8 @@
 import aiohttp
-from libprobe.asset import Asset
 from .connector import get_connector
 
 
-async def query(
-        asset: Asset,
-        asset_config: dict,
-        check_config: dict,
-        req: str):
+async def query(asset_config: dict, req: str):
     api_key = asset_config.get('secret')
     assert api_key, (
         'API key is missing, '
