@@ -172,6 +172,7 @@ async def check_wireless(
     network_id = device['networkId']
     item = {
         "name": serial,  # str (serial)
+        "organizationId": org_id,
         "deviceName": device['name'],  # str
         "mac": device['mac'],  # str
         "networkId": network_id,  # str
