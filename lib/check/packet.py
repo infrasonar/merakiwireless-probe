@@ -7,7 +7,7 @@ from ..query import query
 def _float(inp: float | int | str | None) -> float:
     return 0.0 if inp is None else \
         float(inp) if isinstance(inp, (int, str)) else \
-            inp
+        inp
 
 
 async def check_packet(
