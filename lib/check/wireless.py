@@ -86,7 +86,7 @@ async def update_rate(network_id: str, serial: str,
 
     # Kbps -> bytes per second
     item["averageBps"] = None if averageKbps is None else averageKbps * 125
-    item["downloadBps"] = None if downloadKbps is None else  downloadKbps * 125
+    item["downloadBps"] = None if downloadKbps is None else downloadKbps * 125
     item["uploadBps"] = None if uploadKbps is None else uploadKbps * 125
 
 
