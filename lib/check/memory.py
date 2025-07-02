@@ -3,7 +3,6 @@ import asyncio
 import random
 from typing import Any
 from libprobe.asset import Asset
-from libprobe.exceptions import CheckException, Severity
 from ..query import query
 
 
@@ -18,16 +17,16 @@ async def get_memory(org_id: str, serial: str,
             'Memory usage history data for device with '
             f'serial `{serial}` not ready to query')
     memory = resp['items'][0]
-    provisioned = memory["provisioned"]  # int?
+    prov = memory["provisioned"]  # int?
     used = memory["used"]["median"]  # int?
     free = memory["free"]["median"]  # int?
 
     # All in kB, * 1000 -> bytes
     item = {
         "name": serial,
-        "provisioned": None if provisioned is None else provisioned * 1000,
-        "used": None if used is None else used * 1000,
-        "free": None if free is None else free * 1000,
+        "provisioned": None if prov is None else int(prov) * 1000,
+        "used": None if used is None else int(used) * 1000,
+        "free": None if free is None else int(free) * 1000,
     }
     return item
 
