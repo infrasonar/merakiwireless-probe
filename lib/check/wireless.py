@@ -4,6 +4,7 @@ import logging
 import random
 from typing import Any
 from libprobe.asset import Asset
+from libprobe.exceptions import CheckException, Severity
 from ..query import query
 
 
@@ -40,9 +41,9 @@ async def get_signal_quality(network_id: str, serial: str,
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
-        raise Exception(
-            'Signal strength history data for wireless '
-            f'with serial `{serial}` not ready to query')
+        raise CheckException(
+            'Signal strength history data for wireless with '
+            f'serial `{serial}` not ready to query', severity=Severity.LOW)
     signal_quality = resp[0]
     return [{
         "name": serial,
@@ -60,9 +61,9 @@ async def update_latency(network_id: str, serial: str,
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
-        raise Exception(
-            'Signal strength history data for wireless '
-            f'with serial `{serial}` not ready to query')
+        raise CheckException(
+            'Signal strength history data for wireless with '
+            f'serial `{serial}` not ready to query', severity=Severity.LOW)
     latency = resp[0]
     item["avgLatencyMs"] = latency['avgLatencyMs']  # int
 
@@ -75,9 +76,9 @@ async def update_rate(network_id: str, serial: str,
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
-        raise Exception(
-            'Data rate history for wireless '
-            f'with serial `{serial}` not ready to query')
+        raise CheckException(
+            'Data rate history for wireless with '
+            f'serial `{serial}` not ready to query', severity=Severity.LOW)
     rate = resp[0]
     # Kbps -> bytes per second
     item["averageBps"] = rate['averageKbps'] * 125  # int
@@ -93,9 +94,9 @@ async def update_client_count(network_id: str, serial: str,
         f'?timespan=300&resolution=300&deviceSerial={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
-        raise Exception(
-            'Client count history data for wireless '
-            f'with serial `{serial}` not ready to query')
+        raise CheckException(
+            'Client count history data for wireless with '
+            f'serial `{serial}` not ready to query', severity=Severity.LOW)
     client_count = resp[0]
     item["clientCount"] = client_count['clientCount']  # int
 
@@ -108,9 +109,9 @@ async def get_channel_utilization(org_id: str, serial: str,
         f'byDevice?interval=300&timespan=300&serials[]={serial}')
     resp = await query(asset_config, req)
     if len(resp) == 0:
-        raise Exception(
-            'Channel utilization data for wireless '
-            f'with serial `{serial}` not ready to query')
+        raise CheckException(
+            'Channel utilization data for wireless with '
+            f'serial `{serial}` not ready to query', severity=Severity.LOW)
     channel_utilization = resp[0]
     by_band = channel_utilization.get('byBand', [])
     items: list[dict[str, Any]] = []

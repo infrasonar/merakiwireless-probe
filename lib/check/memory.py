@@ -3,6 +3,7 @@ import asyncio
 import random
 from typing import Any
 from libprobe.asset import Asset
+from libprobe.exceptions import CheckException, Severity
 from ..query import query
 
 
@@ -24,9 +25,9 @@ async def get_memory(org_id: str, serial: str,
     if not isinstance(provisioned, int) or \
             not isinstance(used, int) or \
             not isinstance(free, int):
-        raise Exception(
+        raise CheckException(
             'Memory usage history data for device with '
-            f'serial `{serial}` not ready to query')
+            f'serial `{serial}` not ready to query', severity=Severity.LOW)
 
     # All in kB, * 1000 -> bytes
     item = {
