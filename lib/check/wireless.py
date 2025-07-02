@@ -45,12 +45,12 @@ async def get_signal_quality(network_id: str, serial: str,
             'Signal strength history data for wireless with '
             f'serial `{serial}` not ready to query', severity=Severity.LOW)
     signal_quality = resp[0]
-    return [{
+    return {
         "name": serial,
         "networkId": network_id,
-        "snr": signal_quality['snr'],  # int  (e.g. 39)
-        "rssi": signal_quality['rssi'],  # int  (e.g. -59)
-    }]
+        "snr": signal_quality['snr'],  # int?  (e.g. 39)
+        "rssi": signal_quality['rssi'],  # int?  (e.g. -59)
+    }
 
 
 async def update_latency(network_id: str, serial: str,
@@ -225,6 +225,8 @@ async def check_wireless(
     try:
         signal_quality = \
             await get_signal_quality(network_id, serial, asset_config)
+        assert signal_quality["snr"] is not None
+        assert signal_quality["rssi"] is not None
     except Exception:
         await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         signal_quality = \
@@ -241,7 +243,7 @@ async def check_wireless(
     state = {
         "device": [item],  # single item
         "network": [network],  # single item
-        "signalQuality": signal_quality,  # single item
+        "signalQuality": [signal_quality],  # single item
         "channelUtilization": channel_utilization,  # multi items
     }
 
