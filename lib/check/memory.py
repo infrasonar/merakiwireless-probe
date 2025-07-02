@@ -13,15 +13,27 @@ async def get_memory(org_id: str, serial: str,
         f'byInterval?serials[]={serial}&interval=300&timespan=300')
     resp = await query(asset_config, req)
     if not isinstance(resp, dict) or len(resp.get('items', [])) == 0:
-        raise Exception(f'Memory history for serial `{serial}` not found')
+        raise Exception(
+            'Memory usage history data for device with '
+            f'serial `{serial}` not ready to query')
     memory = resp['items'][0]
+    provisioned = memory["provisioned"]
+    used = memory["used"]["median"]
+    free = memory["free"]["median"]
+
+    if not isinstance(provisioned, int) or \
+            not isinstance(used, int) or \
+            not isinstance(free, int):
+        raise Exception(
+            'Memory usage history data for device with '
+            f'serial `{serial}` not ready to query')
 
     # All in kB, * 1000 -> bytes
     item = {
         "name": serial,
-        "provisioned": memory["provisioned"] * 1000,  # int
-        "used": memory["used"]["median"] * 1000,  # int
-        "free": memory["free"]["median"] * 1000,  # int
+        "provisioned": provisioned * 1000,  # int
+        "used": used * 1000,  # int
+        "free": free * 1000,  # int
     }
     return item
 
@@ -50,7 +62,7 @@ async def check_memory(
     try:
         item = await get_memory(org_id, serial, asset_config)
     except Exception:
-        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
+        await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         item = await get_memory(org_id, serial, asset_config)
 
     state = {

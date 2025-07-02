@@ -41,8 +41,8 @@ async def get_signal_quality(network_id: str, serial: str,
     resp = await query(asset_config, req)
     if len(resp) == 0:
         raise Exception(
-            'Signal strength for wireless '
-            f'with serial `{serial}` not found')
+            'Signal strength history data for wireless '
+            f'with serial `{serial}` not ready to query')
     signal_quality = resp[0]
     return [{
         "name": serial,
@@ -61,8 +61,8 @@ async def update_latency(network_id: str, serial: str,
     resp = await query(asset_config, req)
     if len(resp) == 0:
         raise Exception(
-            'Signal strength for wireless '
-            f'with serial `{serial}` not found')
+            'Signal strength history data for wireless '
+            f'with serial `{serial}` not ready to query')
     latency = resp[0]
     item["avgLatencyMs"] = latency['avgLatencyMs']  # int
 
@@ -76,8 +76,8 @@ async def update_rate(network_id: str, serial: str,
     resp = await query(asset_config, req)
     if len(resp) == 0:
         raise Exception(
-            'Data rate for wireless '
-            f'with serial `{serial}` not found')
+            'Data rate history for wireless '
+            f'with serial `{serial}` not ready to query')
     rate = resp[0]
     # Kbps -> bytes per second
     item["averageBps"] = rate['averageKbps'] * 125  # int
@@ -94,8 +94,8 @@ async def update_client_count(network_id: str, serial: str,
     resp = await query(asset_config, req)
     if len(resp) == 0:
         raise Exception(
-            'Client count for wireless '
-            f'with serial `{serial}` not found')
+            'Client count history data for wireless '
+            f'with serial `{serial}` not ready to query')
     client_count = resp[0]
     item["clientCount"] = client_count['clientCount']  # int
 
@@ -109,8 +109,8 @@ async def get_channel_utilization(org_id: str, serial: str,
     resp = await query(asset_config, req)
     if len(resp) == 0:
         raise Exception(
-            'Channel utilization for wireless '
-            f'with serial `{serial}` not found')
+            'Channel utilization data for wireless '
+            f'with serial `{serial}` not ready to query')
     channel_utilization = resp[0]
     by_band = channel_utilization.get('byBand', [])
     items: list[dict[str, Any]] = []
@@ -197,26 +197,26 @@ async def check_wireless(
     try:
         await update_latency(network_id, serial, asset_config, network)
     except Exception:
-        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
+        await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         await update_latency(network_id, serial, asset_config, network)
 
     try:
         await update_rate(network_id, serial, asset_config, network)
     except Exception:
-        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
+        await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         await update_rate(network_id, serial, asset_config, network)
 
     try:
         await update_client_count(network_id, serial, asset_config, network)
     except Exception:
-        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
+        await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         await update_client_count(network_id, serial, asset_config, network)
 
     try:
         signal_quality = \
             await get_signal_quality(network_id, serial, asset_config)
     except Exception:
-        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
+        await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         signal_quality = \
             await get_signal_quality(network_id, serial, asset_config)
 
@@ -224,7 +224,7 @@ async def check_wireless(
         channel_utilization = \
             await get_channel_utilization(org_id, serial, asset_config)
     except Exception:
-        await asyncio.sleep(2.0 + random.random()*3.0)  # Retry
+        await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         channel_utilization = \
             await get_channel_utilization(org_id, serial, asset_config)
 
