@@ -4,8 +4,10 @@ import os
 from libprobe.exceptions import CheckException, Severity
 from .connector import get_connector
 
+
 max_requests = int(os.getenv('MAX_REQUESTS', '2'))
 sem = asyncio.Semaphore(max_requests)
+
 
 async def query(asset_config: dict, req: str):
     api_key = asset_config.get('secret')
@@ -22,7 +24,7 @@ async def query(asset_config: dict, req: str):
             async with session.get(uri, headers=headers, ssl=True) as resp:
                 if resp.status == 429:
                     raise CheckException("(429) Too Many Requests",
-                                        severity=Severity.LOW)
+                                         severity=Severity.LOW)
                 assert resp.status // 100 == 2, (
                     f'response status code: {resp.status}; '
                     f'reason: {resp.reason}')
