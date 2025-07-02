@@ -1,7 +1,11 @@
+import asyncio
 import aiohttp
+import os
 from libprobe.exceptions import CheckException, Severity
 from .connector import get_connector
 
+max_requests = int(os.getenv('MAX_REQUESTS', '2'))
+sem = asyncio.Semaphore(max_requests)
 
 async def query(asset_config: dict, req: str):
     api_key = asset_config.get('secret')
@@ -13,14 +17,15 @@ async def query(asset_config: dict, req: str):
         'X-Cisco-Meraki-API-Key': api_key,
     }
     uri = f'https://api.meraki.com/api/v1{req}'
+    async with sem:
+        async with aiohttp.ClientSession(connector=get_connector()) as session:
+            async with session.get(uri, headers=headers, ssl=True) as resp:
+                if resp.status == 429:
+                    raise CheckException("(429) Too Many Requests",
+                                        severity=Severity.LOW)
+                assert resp.status // 100 == 2, (
+                    f'response status code: {resp.status}; '
+                    f'reason: {resp.reason}')
 
-    async with aiohttp.ClientSession(connector=get_connector()) as session:
-        async with session.get(uri, headers=headers, ssl=True) as resp:
-            if resp.status == 429:
-                raise CheckException("(429) Too Many Requests",
-                                     severity=Severity.LOW)
-            assert resp.status // 100 == 2, \
-                f'response status code: {resp.status}; reason: {resp.reason}'
-
-            data = await resp.json()
-            return data
+                data = await resp.json()
+                return data
