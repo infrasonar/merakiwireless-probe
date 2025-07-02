@@ -5,7 +5,7 @@ from libprobe.exceptions import CheckException, Severity
 from .connector import get_connector
 
 
-max_requests = int(os.getenv('MAX_REQUESTS', '2'))
+max_requests = int(os.getenv('MAX_REQUESTS', '5'))
 sem = asyncio.Semaphore(max_requests)
 
 
