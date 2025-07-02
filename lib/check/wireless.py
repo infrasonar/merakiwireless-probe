@@ -65,7 +65,7 @@ async def update_latency(network_id: str, serial: str,
             'Signal strength history data for wireless with '
             f'serial `{serial}` not ready to query', severity=Severity.LOW)
     latency = resp[0]
-    item["avgLatencyMs"] = latency['avgLatencyMs']  # int
+    item["avgLatencyMs"] = latency['avgLatencyMs']  # int?
 
 
 async def update_rate(network_id: str, serial: str,
@@ -80,10 +80,14 @@ async def update_rate(network_id: str, serial: str,
             'Data rate history for wireless with '
             f'serial `{serial}` not ready to query', severity=Severity.LOW)
     rate = resp[0]
+    averageKbps = rate['averageKbps']  # int?
+    downloadKbps = rate['downloadKbps']  # int?
+    uploadKbps = rate['uploadKbps']  # int?
+
     # Kbps -> bytes per second
-    item["averageBps"] = rate['averageKbps'] * 125  # int
-    item["downloadBps"] = rate['downloadKbps'] * 125  # int
-    item["uploadBps"] = rate['uploadKbps'] * 125  # int
+    item["averageBps"] = None if averageKbps is None else averageKbps * 125
+    item["downloadBps"] = None if downloadKbps is None else  downloadKbps * 125
+    item["uploadBps"] = None if uploadKbps is None else uploadKbps * 125
 
 
 async def update_client_count(network_id: str, serial: str,
@@ -98,7 +102,7 @@ async def update_client_count(network_id: str, serial: str,
             'Client count history data for wireless with '
             f'serial `{serial}` not ready to query', severity=Severity.LOW)
     client_count = resp[0]
-    item["clientCount"] = client_count['clientCount']  # int
+    item["clientCount"] = client_count['clientCount']  # int?
 
 
 async def get_channel_utilization(org_id: str, serial: str,
@@ -197,18 +201,23 @@ async def check_wireless(
 
     try:
         await update_latency(network_id, serial, asset_config, network)
+        assert network["avgLatencyMs"] is not None
     except Exception:
         await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         await update_latency(network_id, serial, asset_config, network)
 
     try:
         await update_rate(network_id, serial, asset_config, network)
+        assert network["averageBps"] is not None
+        assert network["downloadBps"] is not None
+        assert network["uploadBps"] is not None
     except Exception:
         await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         await update_rate(network_id, serial, asset_config, network)
 
     try:
         await update_client_count(network_id, serial, asset_config, network)
+        assert network["clientCount"] is not None
     except Exception:
         await asyncio.sleep(16.0 + random.random()*5.0)  # Retry
         await update_client_count(network_id, serial, asset_config, network)
