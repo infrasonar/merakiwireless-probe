@@ -1,4 +1,5 @@
 import aiohttp
+from libprobe.exceptions import CheckException, Severity
 from .connector import get_connector
 
 
@@ -15,6 +16,9 @@ async def query(asset_config: dict, req: str):
 
     async with aiohttp.ClientSession(connector=get_connector()) as session:
         async with session.get(uri, headers=headers, ssl=True) as resp:
+            if resp.status == 429:
+                raise CheckException("(429) Too Many Requests",
+                                     severity=Severity.LOW)
             assert resp.status // 100 == 2, \
                 f'response status code: {resp.status}; reason: {resp.reason}'
 
