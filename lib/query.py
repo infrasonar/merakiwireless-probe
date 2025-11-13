@@ -9,8 +9,8 @@ max_requests = int(os.getenv('MAX_REQUESTS', '5'))
 sem = asyncio.Semaphore(max_requests)
 
 
-async def query(asset_config: dict, req: str):
-    api_key = asset_config.get('secret')
+async def query(local_config: dict, req: str):
+    api_key = local_config.get('secret')
     assert api_key, (
         'API key is missing, '
         'please provide the API key as `secret` in the appliance config')
