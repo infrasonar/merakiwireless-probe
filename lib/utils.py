@@ -1,8 +1,7 @@
 import time
-from typing import Optional
 
 
-def datetime_to_timestamp(val: Optional[str]) -> Optional[int]:
+def datetime_to_timestamp(val: str | None) -> int | None:
     if not isinstance(val, str):
         return
     d_fmt = '%Y/%m/%d %H:%M:%S'
@@ -13,7 +12,7 @@ def datetime_to_timestamp(val: Optional[str]) -> Optional[int]:
         return None
 
 
-def datefmt_to_timestamp(val: Optional[str], fmt: str) -> Optional[int]:
+def datefmt_to_timestamp(val: str | None, fmt: str) -> int | None:
     if not isinstance(val, str):
         return
     try:
@@ -22,7 +21,7 @@ def datefmt_to_timestamp(val: Optional[str], fmt: str) -> Optional[int]:
         return None
 
 
-def uptime_seconds(val: Optional[str]) -> Optional[int]:
+def uptime_seconds(val: str | None) -> int | None:
     if not isinstance(val, str):
         return
     lst = val.split(' days, ')
@@ -33,7 +32,7 @@ def uptime_seconds(val: Optional[str]) -> Optional[int]:
     return 86400 * days + seconds
 
 
-def to_int(val: Optional[str]) -> Optional[int]:
+def to_int(val: str | None) -> int | None:
     try:
         assert val is not None
         return int(val)
@@ -41,5 +40,5 @@ def to_int(val: Optional[str]) -> Optional[int]:
         return None
 
 
-def to_bool(val: Optional[str]) -> Optional[bool]:
+def to_bool(val: str | None) -> bool | None:
     return True if val == 'True' else False if val == 'False' else None
